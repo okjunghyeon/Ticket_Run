@@ -38,3 +38,6 @@ out/
 
 ### custom ###
 src/main/resources/application-secret.yml
+ticketrun-dev.mv.db
+ticketrun-dev.trace.db
+ticketrun-dev.lock.db
