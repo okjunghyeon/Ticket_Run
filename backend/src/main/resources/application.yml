@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ticketrun
+
+  profiles:
+    include: secret
+    active: dev
+
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 100
+
+logging:
+  web:
+    resources:
+      add-mappings: false
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+custom:
+  dev: # 로컬 개발 환경 주소
+    domain: localhost
+    backUrl: "http://${custom.dev.domain}:${server.port}"
+    frontUrl: "http://${custom.dev.domain}:3000"
+  prod: # 운영 서버 주소
+    domain: sulee.site
+    backUrl: "https://api.${custom.prod.domain}"
+    frontUrl: "https://www.${custom.prod.domain}"
+  site:
+    domain: "${custom.dev.domain}"
+    backUrl: "${custom.dev.backUrl}"
+    frontUrl: "${custom.dev.frontUrl}"
+
+cors:
+  allowed-origins:
+    - https://www.app4.qwas.shop
+    - https://login.aleph.kr
+    - http://localhost:3000
+    - https://web-4-5-gpt-fe.vercel.app
+    - https://web-4-5-gpt-l4cx985jz-lisarnjs-projects.vercel.app
+    - https://api.sulee.site
+    - https://api.un1hub.site
+    - http://localhost:5173
+
+
