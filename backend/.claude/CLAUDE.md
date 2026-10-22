@@ -11,7 +11,7 @@ Spring Boot + Spring Data JPA 백엔드의 도메인 단위 코드 작성 규칙
 ├── common/
 │   ├── config/
 │   ├── exception/          GlobalExceptionHandler, CustomException, ErrorCode (인터페이스만)
-│   ├── model/              BaseEntity, BaseResponse, PageResponse
+│   ├── model/              BaseEntity, BaseResponse, PageResponse, ErrorDetail
 │   └── client/             외부 서비스 연동 클라이언트
 └── domain/{domain}/
     ├── {subDomain}/        도메인이 커지면 분리 (구조 동일)
@@ -41,7 +41,15 @@ Spring Boot + Spring Data JPA 백엔드의 도메인 단위 코드 작성 규칙
   - 파일: `multipart/form-data` + `@RequestPart("request")` / `@RequestPart("files")`
   - 검색: 쿼리 파라미터를 `@Valid {Domain}SearchRequest` record로 바인딩
   - 페이징: `@PageableDefault(size = N, sort = "createdAt", direction = DESC) Pageable`
-- 응답은 단건 `BaseResponse<T>(data, message)`, 목록 `PageResponse<List<T>>` 로 통일한다.
+- 응답은 단건 `BaseResponse<T>(code, data, message)`, 목록 `PageResponse<List<T>>`(`code, data, message` + 페이지 정보), 실패 `ErrorDetail(code, errorCode, message, errors)` 로 통일한다.
+  - `code` 는 모든 응답에서 실제 HTTP 상태 번호(int)다. 성공 응답은 `ResponseCodeAdvice` 가 응답 직전에 채우므로 컨트롤러는 `new BaseResponse<>(data, message)` / `new BaseResponse<>(message)` 만 쓰고 code를 직접 넘기지 않는다. 상태는 `@ResponseStatus` 또는 `ResponseEntity` 로만 정한다.
+  - 실패 응답의 `errorCode` 는 `ErrorCode` enum name이고, `errors` 는 `@Valid` 검증 실패 시에만 포함된다 (7장 참고).
+
+```json
+{ "code": 201, "data": { }, "message": "생성했습니다." }
+{ "code": 400, "errorCode": "INVALID_INPUT", "message": "입력값이 올바르지 않습니다.",
+  "errors": [{ "field": "name", "rejectedValue": "", "reason": "이름은 필수입니다." }] }
+```
 - **Swagger는 기능 구현이 끝난 뒤 개발자가 요청할 때만 적용한다. 임의로 `@Tag`, `docs/` 어노테이션을 생성하지 않는다.** 요청받으면 `@Tag` 는 클래스에, 메서드에는 `@{Action}{Domain}ApiDocs` 하나만 붙이고 `@Operation`·`@ApiResponses` 는 docs 안에 작성한다.
 - 비즈니스 규칙이나 예외 조건이 있는 public 메서드에는 Javadoc(`@param`, `@return`, `@throws`)을 작성한다.
 
@@ -96,7 +104,7 @@ Spring Boot + Spring Data JPA 백엔드의 도메인 단위 코드 작성 규칙
 - `common/exception` 에는 `ErrorCode` 인터페이스와 `CustomException`, `GlobalExceptionHandler` 만 둔다. common은 도메인의 ExceptionCode를 알지 못한다.
 - `ErrorCode` 는 `HttpStatus getStatus()`, `String getMessage()`, `String name()` 을 선언하고, `default String getCode() { return name(); }` 로 문자열 에러 코드를 제공한다.
 - 각 도메인은 `domain/{domain}/exception/{Domain}ExceptionCode` enum이 `ErrorCode` 를 구현하고, `{Domain}Exception extends CustomException` 이 이를 받는다: `throw new {Domain}Exception(XXX)` (static import).
-- 상태는 `int` 가 아닌 `HttpStatus` 로 선언한다. 응답에는 `getCode()`(enum name, 예: `IMAGE_REQUIRED`)를 내려, 같은 상태 코드 안에서도 클라이언트가 구분할 수 있게 한다.
+- 상태는 `int` 가 아닌 `HttpStatus` 로 선언한다. 응답의 `code` 에는 `getStatus()` 의 상태 번호를, `errorCode` 에는 `getCode()`(enum name, 예: `IMAGE_REQUIRED`)를 내려, 같은 상태 코드 안에서도 클라이언트가 구분할 수 있게 한다.
 - 응답 변환은 `GlobalExceptionHandler`(`@RestControllerAdvice`) 한 곳에서만 한다. 하위 도메인은 상위 도메인의 예외를 공유한다.
 - 새 예외는 해당 도메인의 `{Domain}ExceptionCode` 안에서 HTTP 상태 섹션에 추가하고, 섹션이 없으면 상태 코드 오름차순 위치에 새로 만든다.
 

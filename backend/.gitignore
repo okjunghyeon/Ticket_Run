@@ -37,5 +37,5 @@ out/
 .vscode/
 
 ### custom ###
-auto-blog-writer
 application-secret.yml
+posts
