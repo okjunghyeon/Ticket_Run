@@ -13,7 +13,7 @@ class BaseResponseTest {
 
     private final JsonMapper jsonMapper = JsonMapper.builder().build();
 
-    @DisplayName("단건 성공 응답은 SUCCESS 코드를 가장 먼저 내려줄 수 있다.")
+    @DisplayName("단건 성공 응답은 상태 코드를 가장 먼저 내려줄 수 있다.")
     @Test
     void test1() {
         // given
@@ -23,10 +23,10 @@ class BaseResponseTest {
         String json = jsonMapper.writeValueAsString(response);
 
         // then
-        assertThat(json).isEqualTo("{\"code\":\"SUCCESS\",\"data\":\"data\",\"message\":\"조회했습니다.\"}");
+        assertThat(json).isEqualTo("{\"code\":200,\"data\":\"data\",\"message\":\"조회했습니다.\"}");
     }
 
-    @DisplayName("메시지만 있는 성공 응답도 SUCCESS 코드를 내려줄 수 있다.")
+    @DisplayName("메시지만 있는 성공 응답도 상태 코드를 내려줄 수 있다.")
     @Test
     void test2() {
         // given
@@ -36,10 +36,10 @@ class BaseResponseTest {
         String json = jsonMapper.writeValueAsString(response);
 
         // then
-        assertThat(json).isEqualTo("{\"code\":\"SUCCESS\",\"data\":null,\"message\":\"삭제했습니다.\"}");
+        assertThat(json).isEqualTo("{\"code\":200,\"data\":null,\"message\":\"삭제했습니다.\"}");
     }
 
-    @DisplayName("목록 성공 응답은 SUCCESS 코드를 가장 먼저 내려줄 수 있다.")
+    @DisplayName("목록 성공 응답은 상태 코드를 가장 먼저 내려줄 수 있다.")
     @Test
     void test3() {
         // given
@@ -50,6 +50,6 @@ class BaseResponseTest {
         String json = jsonMapper.writeValueAsString(response);
 
         // then
-        assertThat(json).startsWith("{\"code\":\"SUCCESS\",\"data\":[\"a\"]");
+        assertThat(json).startsWith("{\"code\":200,\"data\":[\"a\"]");
     }
 }
