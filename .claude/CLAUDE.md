@@ -70,6 +70,20 @@ When the work is done:
 
 Why: an agent that only ships code leaves the user unable to maintain it. They should finish each task slightly more able to do it without you.
 
+## 6. Commit Convention
+
+**One commit per core unit of work. Fixed message format.**
+
+- Split commits by core unit of work (e.g. package structure / entity·config / yml), not one commit for the whole issue.
+- First line: `Type: 요약(#이슈번호)` - capitalized type (`Feat`, `Fix`, `Refactor`, `Chore`, `Docs`, `Test`), issue number in parentheses at the end with no space before it.
+- Details only when needed: one blank line after the first line, then one `- ` line per change.
+
+```
+Fix: 축제 관리자만 부스 목록에서 모든 데이터를 확인하도록 수정(#12)
+
+- 축제 관리자만 부스 목록에서 모든 데이터를 확인하도록 수정
+```
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and stated assumptions get corrected early instead of surfacing as mistakes late.

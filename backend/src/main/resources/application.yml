@@ -5,3 +5,6 @@ spring:
   application:
     name: ticketRun
     version: 1.0
+
+  jpa:
+    open-in-view: false
