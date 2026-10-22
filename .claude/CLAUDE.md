@@ -1,89 +1,29 @@
 # CLAUDE.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+## 1. 커밋 컨벤션
 
-**Scope:** Only what current models still get wrong. If the model or the harness already handles something reliably, it doesn't belong here - a rule that restates default behavior burns context and buys nothing.
+**핵심 작업 단위당 하나의 커밋. 고정된 메시지 형식.**
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
-
-## 1. State Assumptions, Then Proceed
-
-**Say what you assumed. Keep going. Default the rest.**
-
-Before implementing:
-- State your assumptions in one line, then start.
-- If multiple interpretations exist, pick the likeliest and say which one you picked.
-- If a simpler approach exists, say so while doing the work - not as a question that blocks it.
-- Ask only when the answer changes what gets built, not how well, and the wrong choice can't be cheaply undone.
-
-A stated assumption gets corrected in seconds. A question costs a round-trip and hands the work back to the user. If you're about to ask a second question in one task, you're doing it wrong.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Verify Before Done
-
-**If you touched code, run the check before saying "done" - and report what actually ran.**
-
-- `npm test`, `pytest`, `cargo test`, whatever the project uses. Smallest relevant check first, broader checks when risk is high.
-- No test setup? At minimum, verify the project builds or typechecks.
-- Report the exact command and its result: "passed", "failed with X", or "not run because Y".
-- Never write "done", "fixed", or "works" unless a concrete check backs it.
-- Run it proactively, before the user signals "끝", "완료", "다 됐어".
-
-This is the step LLMs skip most often. Treat it as non-negotiable.
-
-## 5. Teach One Thing On The Way Out
-
-**End with what the user would want to know next time. Two or three sentences.**
-
-When the work is done:
-- Name the one concept, tradeoff, or gotcha that actually mattered here.
-- Teach what the code doesn't show: why this way over the obvious one, which default you leaned on, what breaks first at scale.
-- If it needs a heading, it's too long. If it restates the diff, delete it.
-- Skip it when the change is trivial, or when the user is the one who taught you the thing.
-
-Why: an agent that only ships code leaves the user unable to maintain it. They should finish each task slightly more able to do it without you.
-
-## 6. Commit Convention
-
-**One commit per core unit of work. Fixed message format.**
-
-- Split commits by core unit of work (e.g. package structure / entity·config / yml), not one commit for the whole issue.
-- First line: `Type: 요약(#이슈번호)` - capitalized type (`Feat`, `Fix`, `Refactor`, `Chore`, `Docs`, `Test`), issue number in parentheses at the end with no space before it.
-- Details only when needed: one blank line after the first line, then one `- ` line per change.
+- 하나의 이슈 전체를 한 번에 커밋하지 않고, 핵심 작업 단위(예: 패키지 구조 / entity·config / yml)별로 커밋을 분리합니다.
+- 첫 번째 줄: `Type: 요약(#이슈번호)` 첫 글자는 대문자인 타입(`Feat`, `Fix`, `Refactor`, `Chore`, `Docs`, `Test`)을 사용하고, 끝에 괄호로 묶인 이슈 번호를 작성하며 괄호 앞에 공백을 두지 않습니다.
+- 세부 내용은 필요한 경우에만 작성합니다: 첫 번째 줄 이후에 빈 줄을 하나 추가하고, 각 변경 사항마다 `- `로 시작하는 줄을 작성합니다.
 
 ```
 Fix: 축제 관리자만 부스 목록에서 모든 데이터를 확인하도록 수정(#12)
 
 - 축제 관리자만 부스 목록에서 모든 데이터를 확인하도록 수정
+
 ```
 
----
+## 2. 브랜치 이름
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and stated assumptions get corrected early instead of surfacing as mistakes late.
+**`type/#이슈번호-한글-요약` 형식. 요약은 한글 위주로 작성합니다.**
+
+- type은 커밋 타입의 소문자형(`feat`, `fix`, `refactor`, `chore`, `docs`, `test`)을 사용합니다.
+- 요약은 이슈 제목을 바탕으로 한글 위주로 짧게 쓰고, 단어 사이는 공백 대신 `-` 로 잇습니다. 영어 번역명으로 바꾸지 않습니다. 단, 코드·기술 고유명사(예: `JWT`, `Redis`)는 그대로 둡니다.
+- `dev` 에서 분기합니다.
+
+```
+feat/#4-전역-예외-처리-및-공통-응답
+chore/#3-공통-패키지-세팅
+```
