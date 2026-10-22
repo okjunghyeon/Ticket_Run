@@ -38,3 +38,4 @@ out/
 
 ### custom ###
 auto-blog-writer
+application-secret.yml
