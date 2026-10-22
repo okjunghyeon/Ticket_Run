@@ -39,7 +39,8 @@ class GlobalExceptionHandlerTest {
         // when & then
         mockMvc.perform(get("/test/custom"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value("TEST_NOT_FOUND"))
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.errorCode").value("TEST_NOT_FOUND"))
                 .andExpect(jsonPath("$.errors").doesNotExist())
                 .andExpect(jsonPath("$.message").value("테스트 리소스를 찾을 수 없습니다."));
     }
@@ -55,7 +56,8 @@ class GlobalExceptionHandlerTest {
         // when & then
         mockMvc.perform(post("/test/valid").contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_INPUT"))
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_INPUT"))
                 .andExpect(jsonPath("$.errors[0].field").value("name"))
                 .andExpect(jsonPath("$.errors[0].rejectedValue").value(""))
                 .andExpect(jsonPath("$.errors[0].reason").value("이름은 필수입니다."))
@@ -68,7 +70,8 @@ class GlobalExceptionHandlerTest {
         // when & then
         mockMvc.perform(post("/test/valid").contentType(MediaType.APPLICATION_JSON).content("{invalid"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("INVALID_REQUEST_BODY"));
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_REQUEST_BODY"));
     }
 
     @DisplayName("Spring MVC 표준 예외는 500으로 덮지 않고 원래 상태로 응답할 수 있다.")
@@ -77,7 +80,8 @@ class GlobalExceptionHandlerTest {
         // when & then
         mockMvc.perform(post("/test/custom"))
                 .andExpect(status().isMethodNotAllowed())
-                .andExpect(jsonPath("$.code").value("METHOD_NOT_ALLOWED"));
+                .andExpect(jsonPath("$.code").value(405))
+                .andExpect(jsonPath("$.errorCode").value("METHOD_NOT_ALLOWED"));
     }
 
     @DisplayName("처리되지 않은 예외는 500으로 응답할 수 있다.")
@@ -86,7 +90,8 @@ class GlobalExceptionHandlerTest {
         // when & then
         mockMvc.perform(get("/test/unexpected"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"))
+                .andExpect(jsonPath("$.code").value(500))
+                .andExpect(jsonPath("$.errorCode").value("INTERNAL_SERVER_ERROR"))
                 .andExpect(jsonPath("$.message").value("서버 내부 오류가 발생했습니다."));
     }
 

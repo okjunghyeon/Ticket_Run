@@ -5,21 +5,22 @@ import java.util.List;
 import org.springframework.validation.BindingResult;
 
 /**
- * 실패 응답 공통 형식. code는 ErrorCode의 enum name, errors는 검증 실패 시에만 내려준다.
+ * 실패 응답 공통 형식. code는 HTTP 상태 코드, errorCode는 ErrorCode의 enum name, errors는 검증 실패 시에만 내려준다.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ErrorDetail(
-        String code,
+        int code,
+        String errorCode,
         String message,
         List<FieldErrorDetail> errors
 ) {
 
-    public static ErrorDetail of(String code, String message) {
-        return new ErrorDetail(code, message, null);
+    public static ErrorDetail of(int code, String errorCode, String message) {
+        return new ErrorDetail(code, errorCode, message, null);
     }
 
-    public static ErrorDetail of(String code, String message, BindingResult bindingResult) {
-        return new ErrorDetail(code, message, FieldErrorDetail.of(bindingResult));
+    public static ErrorDetail of(int code, String errorCode, String message, BindingResult bindingResult) {
+        return new ErrorDetail(code, errorCode, message, FieldErrorDetail.of(bindingResult));
     }
 
     public record FieldErrorDetail(

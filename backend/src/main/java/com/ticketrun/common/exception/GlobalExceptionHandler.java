@@ -26,7 +26,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetail> handleValidationException(MethodArgumentNotValidException e) {
         CommonErrorCode errorCode = CommonErrorCode.INVALID_INPUT;
         return ResponseEntity.status(errorCode.getStatus())
-                .body(ErrorDetail.of(errorCode.getCode(), errorCode.getMessage(), e.getBindingResult()));
+                .body(ErrorDetail.of(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage(),
+                        e.getBindingResult()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -40,9 +41,9 @@ public class GlobalExceptionHandler {
         if (e instanceof ErrorResponse errorResponse) {
             HttpStatusCode status = errorResponse.getStatusCode();
             HttpStatus resolved = HttpStatus.resolve(status.value());
-            String code = resolved != null ? resolved.name() : String.valueOf(status.value());
+            String errorCode = resolved != null ? resolved.name() : String.valueOf(status.value());
             return ResponseEntity.status(status)
-                    .body(ErrorDetail.of(code, errorResponse.getBody().getDetail()));
+                    .body(ErrorDetail.of(status.value(), errorCode, errorResponse.getBody().getDetail()));
         }
 
         log.error("처리되지 않은 예외가 발생했습니다.", e);
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorDetail> toResponse(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getStatus())
-                .body(ErrorDetail.of(errorCode.getCode(), errorCode.getMessage()));
+                .body(ErrorDetail.of(errorCode.getStatus().value(), errorCode.getCode(), errorCode.getMessage()));
     }
 
     // 특정 도메인에 속하지 않는 공통 에러 코드. common이 도메인 코드를 알지 않도록 핸들러 내부에만 둔다.
