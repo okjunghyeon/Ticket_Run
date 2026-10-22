@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 도메인별 {Domain}ExceptionCode enum이 구현하는 에러 코드 규약.
- * common은 이 인터페이스만 알고, 구체적인 도메인 코드는 알지 못한다.
  */
 public interface ErrorCode {
 
