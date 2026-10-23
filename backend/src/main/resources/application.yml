@@ -29,9 +29,11 @@ spring:
             # 이메일(account_email)은 비즈 앱 전환 후 동의항목을 켠 경우에만 scope 에 추가한다.
             scope:
               - profile_nickname
+              - profile_image
           google:
-            # openid 를 빼야 OIDC 대신 OAuth2UserService 하나로 카카오와 같은 흐름을 탄다.
+            # openid 가 있으면 OIDC 흐름이 되어 CustomOidcUserService 가 사용자 정보를 처리한다.
             scope:
+              - openid
               - profile
               - email
         provider:

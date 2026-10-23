@@ -11,6 +11,7 @@ import com.ticketrun.common.config.SecurityConfig;
 import com.ticketrun.domain.member.auth.handler.OAuth2LoginFailureHandler;
 import com.ticketrun.domain.member.auth.handler.OAuth2LoginSuccessHandler;
 import com.ticketrun.domain.member.auth.service.CustomOAuth2UserService;
+import com.ticketrun.domain.member.auth.service.CustomOidcUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ class SecurityConfigTest {
 
     @MockitoBean
     private CustomOAuth2UserService customOAuth2UserService;
+
+    @MockitoBean
+    private CustomOidcUserService customOidcUserService;
 
     @MockitoBean
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;

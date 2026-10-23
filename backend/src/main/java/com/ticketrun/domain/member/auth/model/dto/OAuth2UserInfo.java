@@ -12,7 +12,8 @@ public record OAuth2UserInfo(
         SocialProvider provider,
         String providerId,
         String email,
-        String nickname
+        String nickname,
+        String profileImageUrl
 ) {
 
     private static final String UNSUPPORTED_PROVIDER = "unsupported_provider";
@@ -26,7 +27,7 @@ public record OAuth2UserInfo(
 
     /**
      * @param registrationId application.yml 의 registration 이름 (kakao, google)
-     * @param attributes     제공자 사용자 정보 응답
+     * @param attributes     제공자 사용자 정보 응답 (구글은 OIDC 클레임)
      * @throws OAuth2AuthenticationException 지원하지 않는 제공자인 경우
      */
     public static OAuth2UserInfo of(String registrationId, Map<String, Object> attributes) {
@@ -39,7 +40,7 @@ public record OAuth2UserInfo(
 
     /* ===== private Method ===== */
 
-    // { "id": 123, "kakao_account": { "email": "...", "profile": { "nickname": "..." } } }
+    // { "id": 123, "kakao_account": { "email": "...", "profile": { "nickname": "...", "profile_image_url": "..." } } }
     @SuppressWarnings("unchecked")
     private static OAuth2UserInfo ofKakao(Map<String, Object> attributes) {
         Map<String, Object> account = (Map<String, Object>) attributes.getOrDefault("kakao_account", Map.of());
@@ -48,15 +49,17 @@ public record OAuth2UserInfo(
                 SocialProvider.KAKAO,
                 String.valueOf(attributes.get("id")),
                 (String) account.get("email"),
-                (String) profile.get("nickname"));
+                (String) profile.get("nickname"),
+                (String) profile.get("profile_image_url"));
     }
 
-    // { "sub": "...", "email": "...", "name": "..." }
+    // { "sub": "...", "email": "...", "name": "...", "picture": "..." }
     private static OAuth2UserInfo ofGoogle(Map<String, Object> attributes) {
         return new OAuth2UserInfo(
                 SocialProvider.GOOGLE,
                 (String) attributes.get("sub"),
                 (String) attributes.get("email"),
-                (String) attributes.get("name"));
+                (String) attributes.get("name"),
+                (String) attributes.get("picture"));
     }
 }

@@ -9,6 +9,7 @@ public record MemberResponse(
         SocialProvider provider,
         String email,
         String nickname,
+        String profileImageUrl,
         Role role
 ) {
 
@@ -18,6 +19,7 @@ public record MemberResponse(
                 member.getProvider(),
                 member.getEmail(),
                 member.getNickname(),
+                member.getProfileImageUrl(),
                 member.getRole());
     }
 }

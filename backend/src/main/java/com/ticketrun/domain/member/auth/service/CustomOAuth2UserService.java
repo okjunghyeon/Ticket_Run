@@ -25,6 +25,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfo.of(registrationId, oAuth2User.getAttributes());
         MemberResponse member = memberService.findOrRegister(userInfo);
 
-        return new OAuth2LoginMember(member.memberId(), member.role(), oAuth2User.getAttributes());
+        return OAuth2LoginMember.ofOAuth2(member.memberId(), member.role(), oAuth2User.getAttributes());
     }
 }

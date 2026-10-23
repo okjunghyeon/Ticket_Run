@@ -65,7 +65,8 @@ class AuthServiceTest {
     @Test
     void test2() {
         // given
-        MemberResponse member = new MemberResponse(MEMBER_ID, SocialProvider.KAKAO, null, "관객", Role.AUDIENCE);
+        MemberResponse member = new MemberResponse(MEMBER_ID, SocialProvider.KAKAO, null, "관객", null,
+                Role.AUDIENCE);
 
         given(jwtProvider.getMemberIdFromRefreshToken("old-refresh")).willReturn(MEMBER_ID);
         given(refreshTokenRepository.findByMemberId(MEMBER_ID)).willReturn(Optional.of("old-refresh"));

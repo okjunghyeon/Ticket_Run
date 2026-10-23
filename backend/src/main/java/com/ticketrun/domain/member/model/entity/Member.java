@@ -42,16 +42,21 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", nullable = false, length = 100)
     private String nickname;
 
+    @Column(name = "profile_image_url", length = 512)
+    private String profileImageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
     private Role role;
 
     @Builder
-    public Member(SocialProvider provider, String providerId, String email, String nickname) {
+    public Member(SocialProvider provider, String providerId, String email, String nickname,
+                  String profileImageUrl) {
         this.provider = provider;
         this.providerId = providerId;
         this.email = email;
         this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
         // TODO: 주최자 승격·관리자 지정 기능 추가 전까지 모든 신규 회원은 관객으로 가입한다.
         this.role = Role.AUDIENCE;
     }

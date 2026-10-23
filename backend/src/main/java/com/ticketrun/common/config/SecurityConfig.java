@@ -6,6 +6,7 @@ import com.ticketrun.common.security.JwtProvider;
 import com.ticketrun.domain.member.auth.handler.OAuth2LoginFailureHandler;
 import com.ticketrun.domain.member.auth.handler.OAuth2LoginSuccessHandler;
 import com.ticketrun.domain.member.auth.service.CustomOAuth2UserService;
+import com.ticketrun.domain.member.auth.service.CustomOidcUserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtProvider jwtProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOidcUserService customOidcUserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
@@ -65,7 +67,9 @@ public class SecurityConfig {
                         .requestMatchers(ORGANIZER_URLS).hasRole("ORGANIZER")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                                .oidcUserService(customOidcUserService))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler))
                 .oauth2ResourceServer(resourceServer -> resourceServer

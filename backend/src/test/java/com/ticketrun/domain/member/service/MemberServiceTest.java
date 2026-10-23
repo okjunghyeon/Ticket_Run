@@ -37,7 +37,8 @@ class MemberServiceTest {
     @Test
     void test1() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "관객");
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "관객",
+                "http://k.kakaocdn.net/profile.jpg");
         Member savedMember = createMember(1L, userInfo);
 
         given(memberRepository.findByProviderAndProviderId(SocialProvider.KAKAO, "12345")).willReturn(Optional.empty());
@@ -49,6 +50,7 @@ class MemberServiceTest {
         // then
         assertThat(result.memberId()).isEqualTo(1L);
         assertThat(result.role()).isEqualTo(Role.AUDIENCE);
+        assertThat(result.profileImageUrl()).isEqualTo("http://k.kakaocdn.net/profile.jpg");
         verify(memberRepository).save(any(Member.class));
     }
 
@@ -56,7 +58,8 @@ class MemberServiceTest {
     @Test
     void test2() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "관객");
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "관객",
+                null);
         Member existingMember = createMember(2L, userInfo);
 
         given(memberRepository.findByProviderAndProviderId(SocialProvider.GOOGLE, "google-sub"))
@@ -92,6 +95,7 @@ class MemberServiceTest {
                 .providerId(userInfo.providerId())
                 .email(userInfo.email())
                 .nickname(userInfo.nickname())
+                .profileImageUrl(userInfo.profileImageUrl())
                 .build();
         // id 는 DB가 채우는 값이라 setter 가 없으므로 테스트에서만 직접 주입한다.
         ReflectionTestUtils.setField(member, "id", id);

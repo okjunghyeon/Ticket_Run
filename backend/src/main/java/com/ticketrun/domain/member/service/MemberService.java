@@ -31,6 +31,7 @@ public class MemberService {
                         .providerId(userInfo.providerId())
                         .email(userInfo.email())
                         .nickname(userInfo.nickname())
+                        .profileImageUrl(userInfo.profileImageUrl())
                         .build()));
         return MemberResponse.from(member);
     }
