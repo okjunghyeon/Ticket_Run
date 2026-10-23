@@ -8,3 +8,8 @@ spring:
     properties:
       hibernate:
         show_sql: false
+
+auth:
+  oauth2:
+    # TODO: 배포 도메인 확정 후 프론트엔드 콜백 주소로 교체
+    redirect-uri: https://NEED_TO_INPUT/oauth/callback
