@@ -22,3 +22,5 @@ auth:
   oauth2:
     # 로그인 성공·실패 후 이동할 프론트엔드 주소
     redirect-uri: http://localhost:3000/oauth/callback
+  cors:
+    allowed-origins: http://localhost:3000
