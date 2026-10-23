@@ -17,5 +17,17 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  redis:
+    image: redis:7.4
+    container_name: ticketrun-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    # 포트를 호스트에 열어 두므로 비밀번호 없이 접근할 수 없게 한다.
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+
 volumes:
   mysql-data:
+  redis-data:
