@@ -1,7 +1,6 @@
 package com.ticketrun.domain.member.auth.handler;
 
-import com.ticketrun.common.security.JwtProvider;
-import com.ticketrun.domain.member.auth.api.RefreshTokenCookie;
+import com.ticketrun.domain.member.auth.api.RefreshTokenCookieProvider;
 import com.ticketrun.domain.member.auth.model.dto.OAuth2LoginMember;
 import com.ticketrun.domain.member.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,13 +20,13 @@ import org.springframework.stereotype.Component;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final AuthService authService;
-    private final JwtProvider jwtProvider;
+    private final RefreshTokenCookieProvider refreshTokenCookieProvider;
     private final String redirectUri;
 
-    public OAuth2LoginSuccessHandler(AuthService authService, JwtProvider jwtProvider,
+    public OAuth2LoginSuccessHandler(AuthService authService, RefreshTokenCookieProvider refreshTokenCookieProvider,
                                      @Value("${auth.oauth2.redirect-uri}") String redirectUri) {
         this.authService = authService;
-        this.jwtProvider = jwtProvider;
+        this.refreshTokenCookieProvider = refreshTokenCookieProvider;
         this.redirectUri = redirectUri;
     }
 
@@ -37,8 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2LoginMember loginMember = (OAuth2LoginMember) authentication.getPrincipal();
         String refreshToken = authService.login(loginMember.memberId());
 
-        response.addHeader(HttpHeaders.SET_COOKIE,
-                RefreshTokenCookie.create(refreshToken, jwtProvider.getRefreshTokenExpiration()).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.create(refreshToken).toString());
         response.sendRedirect(redirectUri);
     }
 }
