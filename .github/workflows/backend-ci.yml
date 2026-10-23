@@ -1,11 +1,9 @@
 name: Backend CI
 
 on:
+  # test 가 필수 체크라 paths 필터를 두지 않는다 (필터에 걸린 PR은 체크가 생성되지 않아 머지가 막힘)
   pull_request:
     branches: [dev, main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-ci.yml'
   push:
     branches: [dev]
     paths:
