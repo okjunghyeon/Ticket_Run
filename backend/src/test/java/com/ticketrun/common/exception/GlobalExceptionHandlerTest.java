@@ -14,7 +14,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -95,6 +98,32 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value("서버 내부 오류가 발생했습니다."));
     }
 
+    @DisplayName("AuthenticationException은 500이 아닌 401과 UNAUTHORIZED로 응답할 수 있다.")
+    @Test
+    void test6() throws Exception {
+        // when
+        ResultActions result = mockMvc.perform(get("/test/unauthenticated"));
+
+        // then
+        result.andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.errorCode").value("UNAUTHORIZED"))
+                .andExpect(jsonPath("$.message").value("인증이 필요합니다."));
+    }
+
+    @DisplayName("컨트롤러 안에서 던져진 AccessDeniedException은 500이 아닌 403과 FORBIDDEN으로 응답할 수 있다.")
+    @Test
+    void test7() throws Exception {
+        // when
+        ResultActions result = mockMvc.perform(get("/test/denied"));
+
+        // then
+        result.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value(403))
+                .andExpect(jsonPath("$.errorCode").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.message").value("접근 권한이 없습니다."));
+    }
+
     @RestController
     static class TestController {
 
@@ -110,6 +139,17 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/unexpected")
         void unexpected() {
             throw new IllegalStateException("unexpected");
+        }
+
+        @GetMapping("/test/unauthenticated")
+        void unauthenticated() {
+            throw new InsufficientAuthenticationException("unauthenticated");
+        }
+
+        @GetMapping("/test/denied")
+        void denied() {
+            // @PreAuthorize 실패처럼 컨트롤러 안에서 던져지는 경우를 재현한다.
+            throw new AccessDeniedException("denied");
         }
     }
 
