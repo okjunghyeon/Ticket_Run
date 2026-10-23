@@ -26,10 +26,11 @@ spring:
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            # 이메일(account_email)은 비즈 앱 전환 후 동의항목을 켠 경우에만 scope 에 추가한다.
+            # account_email 은 비즈 앱에서만 요청할 수 있다. 콘솔 동의항목에 없는 scope 를 요청하면 로그인이 실패한다.
             scope:
               - profile_nickname
               - profile_image
+              - account_email
           google:
             # openid 가 있으면 OIDC 흐름이 되어 CustomOidcUserService 가 사용자 정보를 처리한다.
             scope:

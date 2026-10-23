@@ -35,7 +35,7 @@ public class Member extends BaseEntity {
     @Column(name = "provider_id", nullable = false, length = 100)
     private String providerId;
 
-    // 카카오는 비즈 앱이 아니면 이메일을 받을 수 없어 null 을 허용한다.
+    // 필수 동의여도 카카오 계정에 이메일이 없으면 응답에 빠질 수 있어 null 을 허용한다.
     @Column(name = "email")
     private String email;
 
