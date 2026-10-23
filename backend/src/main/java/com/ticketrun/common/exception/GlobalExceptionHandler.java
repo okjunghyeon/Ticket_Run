@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +35,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDetail> handleNotReadableException(HttpMessageNotReadableException e) {
         return toResponse(CommonErrorCode.INVALID_REQUEST_BODY);
+    }
+
+    // 시큐리티 필터의 EntryPoint/AccessDeniedHandler가 위임한 예외와, 컨트롤러 안(@PreAuthorize 등)에서 던져진 예외를 함께 받는다.
+    // 아래 catch-all에 걸리면 500이 되므로 반드시 별도로 매핑한다.
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorDetail> handleAuthenticationException(AuthenticationException e) {
+        return toResponse(CommonErrorCode.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetail> handleAccessDeniedException(AccessDeniedException e) {
+        return toResponse(CommonErrorCode.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
@@ -65,6 +79,12 @@ public class GlobalExceptionHandler {
         // ===== 400 Bad Request =====
         INVALID_INPUT(HttpStatus.BAD_REQUEST, "입력값이 올바르지 않습니다."),
         INVALID_REQUEST_BODY(HttpStatus.BAD_REQUEST, "요청 본문을 읽을 수 없습니다."),
+
+        // ===== 401 Unauthorized =====
+        UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
+
+        // ===== 403 Forbidden =====
+        FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
         // ===== 500 Internal Server Error =====
         INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
