@@ -7,10 +7,8 @@ spring:
     version: 1.0
 
   profiles:
-    default: dev
-
-  config:
-    import: optional:classpath:application-secret.yml
+    active: dev
+    include: secret
 
   jpa:
     open-in-view: false
