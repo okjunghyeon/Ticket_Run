@@ -16,23 +16,26 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @WebMvcTest(controllers = SecurityConfigTest.TestController.class)
 @Import({SecurityConfig.class, CustomAuthenticationEntryPoint.class, CustomAccessDeniedHandler.class,
-        SecurityResponseWriter.class, SecurityConfigTest.TestController.class})
+        SecurityConfigTest.TestController.class})
 class SecurityConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @DisplayName("인증 없이 보호된 경로를 요청하면 401과 UNAUTHORIZED로 응답할 수 있다.")
+    @DisplayName("인증 없이 보호된 경로를 요청하면 GlobalExceptionHandler를 거쳐 401과 UNAUTHORIZED로 응답할 수 있다.")
     @Test
     void test1() throws Exception {
-        // when & then
-        mockMvc.perform(get("/test/secured"))
-                .andExpect(status().isUnauthorized())
+        // when
+        ResultActions result = mockMvc.perform(get("/test/secured"));
+
+        // then
+        result.andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(401))
                 .andExpect(jsonPath("$.errorCode").value("UNAUTHORIZED"))
@@ -44,18 +47,22 @@ class SecurityConfigTest {
     @WithMockUser
     @Test
     void test2() throws Exception {
-        // when & then
-        mockMvc.perform(get("/test/secured"))
-                .andExpect(status().isOk());
+        // when
+        ResultActions result = mockMvc.perform(get("/test/secured"));
+
+        // then
+        result.andExpect(status().isOk());
     }
 
     @DisplayName("인증 요청에도 세션을 생성하지 않는다.")
     @WithMockUser
     @Test
     void test3() throws Exception {
-        // when & then
-        mockMvc.perform(get("/test/secured"))
-                .andExpect(status().isOk())
+        // when
+        ResultActions result = mockMvc.perform(get("/test/secured"));
+
+        // then
+        result.andExpect(status().isOk())
                 .andExpect(request().sessionAttributeDoesNotExist("SPRING_SECURITY_CONTEXT"))
                 .andExpect(header().doesNotExist("Set-Cookie"));
     }
