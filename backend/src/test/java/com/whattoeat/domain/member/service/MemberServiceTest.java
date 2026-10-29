@@ -37,7 +37,7 @@ class MemberServiceTest {
     @Test
     void test1() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "관객",
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "회원",
                 "http://k.kakaocdn.net/profile.jpg");
         Member savedMember = createMember(1L, userInfo);
 
@@ -58,7 +58,7 @@ class MemberServiceTest {
     @Test
     void test2() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "관객",
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "회원",
                 null);
         Member existingMember = createMember(2L, userInfo);
 
