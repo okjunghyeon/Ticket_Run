@@ -1,12 +1,12 @@
 services:
   mysql:
     image: mysql:8.4
-    container_name: ticketrun-mysql
+    container_name: whattoeat-mysql
     restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: ticketrun
+      MYSQL_DATABASE: whattoeat
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -19,7 +19,7 @@ services:
 
   redis:
     image: redis:7.4
-    container_name: ticketrun-redis
+    container_name: whattoeat-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
