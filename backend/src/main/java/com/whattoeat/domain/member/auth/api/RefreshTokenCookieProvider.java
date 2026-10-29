@@ -1,10 +1,13 @@
 package com.whattoeat.domain.member.auth.api;
 
-import com.whattoeat.common.security.JwtProperties;
 import java.time.Duration;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+
+import com.whattoeat.common.security.JwtProperties;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Refresh 토큰 쿠키 생성 규칙. 로그인 성공 핸들러와 재발급·로그아웃 API가 같은 속성을 쓰도록 한 곳에 둔다.
@@ -17,7 +20,7 @@ public class RefreshTokenCookieProvider {
     public static final String COOKIE_NAME = "refresh_token";
 
     private static final String PATH = "/api/auth";
-    private static final String SAME_SITE = "Lax";
+    private static final String SAME_SITE = "None";
 
     private final JwtProperties jwtProperties;
 

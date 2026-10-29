@@ -48,3 +48,8 @@ auth:
   jwt:
     access-token-expiration: 30m
     refresh-token-expiration: 14d
+
+kakao:
+  local:
+    # rest-api-key 는 application-secret.yml 에서 주입한다.
+    base-url: https://dapi.kakao.com

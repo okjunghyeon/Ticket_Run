@@ -27,3 +27,19 @@ Fix: 축제 관리자만 부스 목록에서 모든 데이터를 확인하도록
 feat/#4-전역-예외-처리-및-공통-응답
 chore/#3-공통-패키지-세팅
 ```
+
+## 3. 이슈 라벨
+
+**작업 유형 라벨 하나 + 영역 라벨 하나 이상.**
+
+- 작업 유형: `enhancement`(기능), `chore`(설정·잡무), `bug`, `documentation` 중 이슈 성격에 맞는 것을 붙입니다.
+- 영역: 변경이 닿는 범위를 모두 붙입니다.
+  - `backend`: Spring Boot 서버 (API, 도메인, DB, 서버 설정)
+  - `frontend`: 프론트엔드 앱 (화면, 클라이언트 상태, API 연동)
+  - `infra`: CI/CD, Docker, 배포, 저장소 자동화 (GitHub Actions, `.claude/skills` 등)
+- PR은 연결된 이슈의 라벨을 그대로 따릅니다.
+
+```
+[FEAT] : 공유 리스트 생성·수정·삭제          → enhancement, backend
+[CHORE] : MySQL 연동 및 환경별 설정 파일 분리 → chore, backend, infra
+```

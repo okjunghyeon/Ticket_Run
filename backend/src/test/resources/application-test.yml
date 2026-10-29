@@ -28,3 +28,7 @@ auth:
     redirect-uri: http://localhost:3000/oauth/callback
   cors:
     allowed-origins: http://localhost:3000
+
+kakao:
+  local:
+    rest-api-key: test-kakao-rest-api-key
