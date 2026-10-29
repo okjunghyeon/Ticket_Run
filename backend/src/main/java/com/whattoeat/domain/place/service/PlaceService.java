@@ -37,9 +37,10 @@ public class PlaceService {
     private final KakaoLocalClient kakaoLocalClient;
 
     /**
-     * 키워드로 맛집을 검색한다. DB를 사용하지 않으므로 외부 API 호출 동안 트랜잭션을 열지 않는다.
+     * 키워드로 맛집을 검색한다. 좌표가 있으면 지도 중심 반경 안에서만 검색한다.
+     * DB를 사용하지 않으므로 외부 API 호출 동안 트랜잭션을 열지 않는다.
      *
-     * @param request  검색어
+     * @param request  검색어, 지도 중심 좌표와 반경 (좌표는 선택)
      * @param pageable 0부터 시작하는 페이지 번호와 크기 (크기는 최대 15로 보정)
      * @return 검색된 맛집 목록
      * @throws PlaceException 45번째 결과 이후를 요청한 경우 (SEARCH_PAGE_OUT_OF_RANGE),
@@ -52,7 +53,7 @@ public class PlaceService {
             throw new PlaceException(SEARCH_PAGE_OUT_OF_RANGE);
         }
 
-        KakaoKeywordSearchResponse response = searchKakaoRestaurants(request.keyword(), searchPageable);
+        KakaoKeywordSearchResponse response = searchKakaoRestaurants(request, searchPageable);
         List<PlaceSearchResponse> places = response.documents().stream()
                 .map(PlaceSearchResponse::from)
                 .toList();
@@ -98,13 +99,16 @@ public class PlaceService {
 
     /* ===== private Method ===== */
 
-    private KakaoKeywordSearchResponse searchKakaoRestaurants(String keyword, Pageable pageable) {
+    private KakaoKeywordSearchResponse searchKakaoRestaurants(PlaceSearchRequest request, Pageable pageable) {
+        // 좌표가 없으면 반경도 넘기지 않아 위치 제한 없이 검색한다. 지역명이 담긴 검색어는 카카오가 그 지역으로 좁힌다.
+        Integer radius = request.hasCoordinate() ? request.radius() : null;
         try {
             // 카카오 페이지 번호는 1부터 시작한다.
-            return kakaoLocalClient.searchRestaurants(keyword, null, null, null,
-                    pageable.getPageNumber() + 1, pageable.getPageSize());
+            return kakaoLocalClient.searchRestaurants(request.keyword(), request.longitude(), request.latitude(),
+                    radius, pageable.getPageNumber() + 1, pageable.getPageSize());
         } catch (RestClientException e) {
-            log.error("카카오 장소 검색 실패: keyword={}", keyword, e);
+            log.error("카카오 장소 검색 실패: keyword={}, longitude={}, latitude={}, radius={}",
+                    request.keyword(), request.longitude(), request.latitude(), radius, e);
             throw new PlaceException(EXTERNAL_API_ERROR);
         }
     }

@@ -49,7 +49,7 @@ class PlaceServiceTest {
     @Test
     void test1() {
         // given
-        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타");
+        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타", null, null, null);
         KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
                 new KakaoKeywordSearchResponse.Meta(120, 45, false),
                 List.of(createDocument("26338954")));
@@ -72,7 +72,7 @@ class PlaceServiceTest {
     @Test
     void test2() {
         // given
-        PlaceSearchRequest request = new PlaceSearchRequest("을지로 노포");
+        PlaceSearchRequest request = new PlaceSearchRequest("을지로 노포", null, null, null);
         KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
                 new KakaoKeywordSearchResponse.Meta(0, 0, true), List.of());
 
@@ -90,7 +90,7 @@ class PlaceServiceTest {
     @Test
     void test3() {
         // given
-        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타");
+        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타", null, null, null);
 
         // when & then
         assertThatThrownBy(() -> placeService.searchPlaces(request, PageRequest.of(3, 15)))
@@ -105,7 +105,7 @@ class PlaceServiceTest {
     @Test
     void test4() {
         // given
-        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타");
+        PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타", null, null, null);
 
         given(kakaoLocalClient.searchRestaurants("강남 파스타", null, null, null, 1, 15))
                 .willThrow(new ResourceAccessException("timeout"));
