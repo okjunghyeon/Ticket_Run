@@ -97,7 +97,7 @@ class SecurityConfigTest {
     @Test
     void test4() throws Exception {
         // given
-        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_AUDIENCE");
+        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_USER");
 
         // when
         ResultActions result = mockMvc.perform(get("/test/me")
