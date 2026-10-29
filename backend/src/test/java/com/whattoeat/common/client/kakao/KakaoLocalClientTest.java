@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 class KakaoLocalClientTest {
 
@@ -57,6 +58,8 @@ class KakaoLocalClientTest {
                 .andExpect(queryParam("category_group_code", "FD6"))
                 .andExpect(queryParam("page", "2"))
                 .andExpect(queryParam("size", "15"))
+                .andExpect(request -> assertThat(UriComponentsBuilder.fromUri(request.getURI()).build().getQueryParams())
+                        .doesNotContainKeys("x", "y", "radius"))
                 .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
 
         // when
@@ -71,6 +74,28 @@ class KakaoLocalClientTest {
         assertThat(document.placeName()).isEqualTo("강남파스타");
         assertThat(document.roadAddressName()).isEqualTo("서울 강남구 테헤란로 1");
         assertThat(document.x()).isEqualTo("127.0276");
+        server.verify();
+    }
+
+    @DisplayName("좌표와 반경을 넘기면 해당 위치 반경 안의 음식점을 검색할 수 있다.")
+    @Test
+    void test2() {
+        // given
+        String body = """
+                {"meta": {"total_count": 0, "pageable_count": 0, "is_end": true}, "documents": []}
+                """;
+
+        server.expect(requestTo(startsWith(BASE_URL + "/v2/local/search/keyword.json")))
+                .andExpect(queryParam("x", "126.8966"))
+                .andExpect(queryParam("y", "37.5263"))
+                .andExpect(queryParam("radius", "1000"))
+                .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
+
+        // when
+        KakaoKeywordSearchResponse result = kakaoLocalClient.searchRestaurants("파스타", 126.8966, 37.5263, 1000, 1, 15);
+
+        // then
+        assertThat(result.documents()).isEmpty();
         server.verify();
     }
 }

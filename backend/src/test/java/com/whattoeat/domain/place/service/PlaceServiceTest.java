@@ -181,6 +181,57 @@ class PlaceServiceTest {
         verify(placeRepository).save(any(Place.class));
     }
 
+    @DisplayName("지도 좌표가 있으면 좌표와 반경 안에서 맛집을 검색할 수 있다.")
+    @Test
+    void test9() {
+        // given
+        PlaceSearchRequest request = new PlaceSearchRequest("파스타", 126.8966, 37.5263, 2000);
+        KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
+                new KakaoKeywordSearchResponse.Meta(0, 0, true), List.of());
+
+        given(kakaoLocalClient.searchRestaurants("파스타", 126.8966, 37.5263, 2000, 1, 15)).willReturn(response);
+
+        // when
+        placeService.searchPlaces(request, PageRequest.of(0, 15));
+
+        // then
+        verify(kakaoLocalClient).searchRestaurants("파스타", 126.8966, 37.5263, 2000, 1, 15);
+    }
+
+    @DisplayName("지도 좌표가 있고 반경이 없으면 기본 반경 1000m 안에서 맛집을 검색할 수 있다.")
+    @Test
+    void test10() {
+        // given
+        PlaceSearchRequest request = new PlaceSearchRequest("파스타", 126.8966, 37.5263, null);
+        KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
+                new KakaoKeywordSearchResponse.Meta(0, 0, true), List.of());
+
+        given(kakaoLocalClient.searchRestaurants("파스타", 126.8966, 37.5263, 1000, 1, 15)).willReturn(response);
+
+        // when
+        placeService.searchPlaces(request, PageRequest.of(0, 15));
+
+        // then
+        verify(kakaoLocalClient).searchRestaurants("파스타", 126.8966, 37.5263, 1000, 1, 15);
+    }
+
+    @DisplayName("지도 좌표가 없으면 반경 없이 위치 제한 없이 맛집을 검색할 수 있다.")
+    @Test
+    void test11() {
+        // given
+        PlaceSearchRequest request = new PlaceSearchRequest("강남 맛집", null, null, 3000);
+        KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
+                new KakaoKeywordSearchResponse.Meta(0, 0, true), List.of());
+
+        given(kakaoLocalClient.searchRestaurants("강남 맛집", null, null, null, 1, 15)).willReturn(response);
+
+        // when
+        placeService.searchPlaces(request, PageRequest.of(0, 15));
+
+        // then
+        verify(kakaoLocalClient).searchRestaurants("강남 맛집", null, null, null, 1, 15);
+    }
+
     private KakaoPlaceDocument createDocument(String id) {
         return new KakaoPlaceDocument(id, "강남파스타", "음식점 > 양식 > 이탈리안", "02-123-4567",
                 "서울 강남구 역삼동 1", "서울 강남구 테헤란로 1", "127.0276", "37.4979",
