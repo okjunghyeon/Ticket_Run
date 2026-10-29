@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 - 모든 명령은 저장소 루트(`git rev-parse --show-toplevel`)에서 실행한다.
 - `gh` 가 PATH에 없으면 `"/c/Program Files/GitHub CLI/gh.exe"` 전체 경로를 쓴다.
-- 기본 프로젝트: `@okjunghyeon's Ticket_Run project` (owner `okjunghyeon`)
+- 기본 프로젝트: `@okjunghyeon's What_To_Eat project` (owner `okjunghyeon`)
 
 ## 1. 사전 확인 (하나라도 걸리면 중단하고 이유를 보고)
 - 현재 브랜치가 `main` / `dev` 이면 중단한다.
