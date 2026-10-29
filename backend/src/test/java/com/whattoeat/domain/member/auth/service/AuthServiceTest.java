@@ -66,12 +66,12 @@ class AuthServiceTest {
     void test2() {
         // given
         MemberResponse member = new MemberResponse(MEMBER_ID, SocialProvider.KAKAO, null, "관객", null,
-                Role.AUDIENCE);
+                Role.USER);
 
         given(jwtProvider.getMemberIdFromRefreshToken("old-refresh")).willReturn(MEMBER_ID);
         given(refreshTokenRepository.findByMemberId(MEMBER_ID)).willReturn(Optional.of("old-refresh"));
         given(memberService.getMember(MEMBER_ID)).willReturn(member);
-        given(jwtProvider.createAccessToken(MEMBER_ID, "ROLE_AUDIENCE")).willReturn("access-token");
+        given(jwtProvider.createAccessToken(MEMBER_ID, "ROLE_USER")).willReturn("access-token");
         given(jwtProvider.createRefreshToken(MEMBER_ID)).willReturn("new-refresh");
         given(jwtProvider.getRefreshTokenExpiration()).willReturn(REFRESH_TOKEN_EXPIRATION);
 

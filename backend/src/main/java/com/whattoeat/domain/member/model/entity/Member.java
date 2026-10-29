@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
-        // TODO: 주최자 승격·관리자 지정 기능 추가 전까지 모든 신규 회원은 관객으로 가입한다.
-        this.role = Role.AUDIENCE;
+        // TODO: 관리자 지정 기능 추가 전까지 모든 신규 회원은 일반 회원으로 가입한다.
+        this.role = Role.USER;
     }
 }

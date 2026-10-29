@@ -33,7 +33,7 @@ class MemberServiceTest {
     @InjectMocks
     private MemberService memberService;
 
-    @DisplayName("처음 로그인한 소셜 사용자는 관객으로 가입할 수 있다.")
+    @DisplayName("처음 로그인한 소셜 사용자는 일반 회원으로 가입할 수 있다.")
     @Test
     void test1() {
         // given
@@ -49,7 +49,7 @@ class MemberServiceTest {
 
         // then
         assertThat(result.memberId()).isEqualTo(1L);
-        assertThat(result.role()).isEqualTo(Role.AUDIENCE);
+        assertThat(result.role()).isEqualTo(Role.USER);
         assertThat(result.profileImageUrl()).isEqualTo("http://k.kakaocdn.net/profile.jpg");
         verify(memberRepository).save(any(Member.class));
     }
