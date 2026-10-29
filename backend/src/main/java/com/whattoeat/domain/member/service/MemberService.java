@@ -18,7 +18,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     /**
-     * 소셜 로그인 사용자를 조회하고, 처음 로그인한 경우 관객(AUDIENCE)으로 가입시킨다.
+     * 소셜 로그인 사용자를 조회하고, 처음 로그인한 경우 일반 회원(USER)으로 가입시킨다.
      *
      * @param userInfo 소셜 제공자에게 받은 사용자 정보
      * @return 로그인한 회원 정보

@@ -51,7 +51,7 @@ public class JwtProvider {
 
     /**
      * @param memberId  토큰 subject 로 쓸 회원 ID
-     * @param authority Spring Security 권한 문자열 (예: ROLE_AUDIENCE)
+     * @param authority Spring Security 권한 문자열 (예: ROLE_USER)
      */
     public String createAccessToken(Long memberId, String authority) {
         JwtClaimsSet claims = baseClaims(memberId, ACCESS_TOKEN_TYPE, jwtProperties.accessTokenExpiration())

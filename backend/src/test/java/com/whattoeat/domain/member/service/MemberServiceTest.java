@@ -33,11 +33,11 @@ class MemberServiceTest {
     @InjectMocks
     private MemberService memberService;
 
-    @DisplayName("처음 로그인한 소셜 사용자는 관객으로 가입할 수 있다.")
+    @DisplayName("처음 로그인한 소셜 사용자는 일반 회원으로 가입할 수 있다.")
     @Test
     void test1() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "관객",
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.KAKAO, "12345", null, "회원",
                 "http://k.kakaocdn.net/profile.jpg");
         Member savedMember = createMember(1L, userInfo);
 
@@ -49,7 +49,7 @@ class MemberServiceTest {
 
         // then
         assertThat(result.memberId()).isEqualTo(1L);
-        assertThat(result.role()).isEqualTo(Role.AUDIENCE);
+        assertThat(result.role()).isEqualTo(Role.USER);
         assertThat(result.profileImageUrl()).isEqualTo("http://k.kakaocdn.net/profile.jpg");
         verify(memberRepository).save(any(Member.class));
     }
@@ -58,7 +58,7 @@ class MemberServiceTest {
     @Test
     void test2() {
         // given
-        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "관객",
+        OAuth2UserInfo userInfo = new OAuth2UserInfo(SocialProvider.GOOGLE, "google-sub", "a@gmail.com", "회원",
                 null);
         Member existingMember = createMember(2L, userInfo);
 

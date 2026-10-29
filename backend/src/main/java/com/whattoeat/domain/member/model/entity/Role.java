@@ -2,8 +2,7 @@ package com.whattoeat.domain.member.model.entity;
 
 public enum Role {
 
-    AUDIENCE,
-    ORGANIZER,
+    USER,
     ADMIN;
 
     // Spring Security 권한 문자열. hasRole("ADMIN") 이 ROLE_ 접두사를 붙여 비교한다.

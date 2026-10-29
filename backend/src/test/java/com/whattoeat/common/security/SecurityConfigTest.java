@@ -97,7 +97,7 @@ class SecurityConfigTest {
     @Test
     void test4() throws Exception {
         // given
-        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_AUDIENCE");
+        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_USER");
 
         // when
         ResultActions result = mockMvc.perform(get("/test/me")
@@ -134,11 +134,11 @@ class SecurityConfigTest {
         result.andExpect(status().isUnauthorized());
     }
 
-    @DisplayName("관객은 관리자 경로에 접근할 수 없다.")
+    @DisplayName("일반 회원은 관리자 경로에 접근할 수 없다.")
     @Test
     void test7() throws Exception {
         // given
-        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_AUDIENCE");
+        String accessToken = jwtProvider.createAccessToken(1L, "ROLE_USER");
 
         // when
         ResultActions result = mockMvc.perform(get("/api/admin/test")
@@ -150,14 +150,14 @@ class SecurityConfigTest {
                 .andExpect(jsonPath("$.errorCode").value("FORBIDDEN"));
     }
 
-    @DisplayName("관리자는 권한 계층에 따라 주최자 경로에 접근할 수 있다.")
+    @DisplayName("관리자는 관리자 경로에 접근할 수 있다.")
     @Test
     void test8() throws Exception {
         // given
         String accessToken = jwtProvider.createAccessToken(1L, "ROLE_ADMIN");
 
         // when
-        ResultActions result = mockMvc.perform(get("/api/organizer/test")
+        ResultActions result = mockMvc.perform(get("/api/admin/test")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken));
 
         // then
@@ -189,10 +189,6 @@ class SecurityConfigTest {
 
         @GetMapping("/api/admin/test")
         void admin() {
-        }
-
-        @GetMapping("/api/organizer/test")
-        void organizer() {
         }
 
         @GetMapping("/api/auth/test")

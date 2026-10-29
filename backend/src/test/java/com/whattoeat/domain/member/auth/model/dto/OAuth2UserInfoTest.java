@@ -20,7 +20,7 @@ class OAuth2UserInfoTest {
                 "kakao_account", Map.of(
                         "email", "kakao@kakao.com",
                         "profile", Map.of(
-                                "nickname", "카카오관객",
+                                "nickname", "카카오회원",
                                 "profile_image_url", "http://k.kakaocdn.net/profile.jpg")));
 
         // when
@@ -30,7 +30,7 @@ class OAuth2UserInfoTest {
         assertThat(result.provider()).isEqualTo(SocialProvider.KAKAO);
         assertThat(result.providerId()).isEqualTo("12345");
         assertThat(result.email()).isEqualTo("kakao@kakao.com");
-        assertThat(result.nickname()).isEqualTo("카카오관객");
+        assertThat(result.nickname()).isEqualTo("카카오회원");
         assertThat(result.profileImageUrl()).isEqualTo("http://k.kakaocdn.net/profile.jpg");
     }
 
@@ -55,7 +55,7 @@ class OAuth2UserInfoTest {
         Map<String, Object> attributes = Map.of(
                 "sub", "google-sub",
                 "email", "google@gmail.com",
-                "name", "구글관객",
+                "name", "구글회원",
                 "picture", "https://lh3.googleusercontent.com/a/profile");
 
         // when
@@ -66,7 +66,7 @@ class OAuth2UserInfoTest {
         assertThat(result.providerId()).isEqualTo("google-sub");
         assertThat(result.email()).isEqualTo("google@gmail.com");
         assertThat(result.profileImageUrl()).isEqualTo("https://lh3.googleusercontent.com/a/profile");
-        assertThat(result.nickname()).isEqualTo("구글관객");
+        assertThat(result.nickname()).isEqualTo("구글회원");
     }
 
     @DisplayName("지원하지 않는 제공자의 사용자 정보는 만들 수 없다.")
