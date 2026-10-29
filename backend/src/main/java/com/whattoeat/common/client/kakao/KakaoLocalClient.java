@@ -2,6 +2,7 @@ package com.whattoeat.common.client.kakao;
 
 import com.whattoeat.common.client.kakao.dto.KakaoKeywordSearchResponse;
 import java.time.Duration;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -35,19 +36,26 @@ public class KakaoLocalClient {
     }
 
     /**
-     * 키워드로 음식점(FD6)을 검색한다.
+     * 키워드로 음식점(FD6)을 검색한다. 좌표가 null 이면 위치 제한 없이 검색한다.
      *
-     * @param query 검색어 (예: "강남 파스타")
-     * @param page  1부터 시작하는 페이지 번호 (최대 45)
-     * @param size  페이지 크기 (최대 15)
+     * @param query     검색어 (예: "강남 파스타")
+     * @param longitude 검색 중심 경도 (nullable)
+     * @param latitude  검색 중심 위도 (nullable)
+     * @param radius    검색 반경 미터 (nullable, 최대 20000)
+     * @param page      1부터 시작하는 페이지 번호 (최대 45)
+     * @param size      페이지 크기 (최대 15)
      * @return 카카오 검색 결과
      */
-    public KakaoKeywordSearchResponse searchRestaurants(String query, int page, int size) {
+    public KakaoKeywordSearchResponse searchRestaurants(String query, Double longitude, Double latitude,
+                                                        Integer radius, int page, int size) {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(KEYWORD_SEARCH_PATH)
                         .queryParam("query", query)
                         .queryParam("category_group_code", RESTAURANT_CATEGORY_CODE)
+                        .queryParamIfPresent("x", Optional.ofNullable(longitude))
+                        .queryParamIfPresent("y", Optional.ofNullable(latitude))
+                        .queryParamIfPresent("radius", Optional.ofNullable(radius))
                         .queryParam("page", page)
                         .queryParam("size", size)
                         .build())

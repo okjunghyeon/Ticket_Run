@@ -60,7 +60,7 @@ class KakaoLocalClientTest {
                 .andRespond(withSuccess(body, MediaType.APPLICATION_JSON));
 
         // when
-        KakaoKeywordSearchResponse result = kakaoLocalClient.searchRestaurants("강남 파스타", 2, 15);
+        KakaoKeywordSearchResponse result = kakaoLocalClient.searchRestaurants("강남 파스타", null, null, null, 2, 15);
 
         // then
         assertThat(result.meta().pageableCount()).isEqualTo(45);

@@ -54,7 +54,7 @@ class PlaceServiceTest {
                 new KakaoKeywordSearchResponse.Meta(120, 45, false),
                 List.of(createDocument("26338954")));
 
-        given(kakaoLocalClient.searchRestaurants("강남 파스타", 1, 15)).willReturn(response);
+        given(kakaoLocalClient.searchRestaurants("강남 파스타", null, null, null, 1, 15)).willReturn(response);
 
         // when
         PageResponse<List<PlaceSearchResponse>> result = placeService.searchPlaces(request, PageRequest.of(0, 15));
@@ -76,14 +76,14 @@ class PlaceServiceTest {
         KakaoKeywordSearchResponse response = new KakaoKeywordSearchResponse(
                 new KakaoKeywordSearchResponse.Meta(0, 0, true), List.of());
 
-        given(kakaoLocalClient.searchRestaurants("을지로 노포", 2, 15)).willReturn(response);
+        given(kakaoLocalClient.searchRestaurants("을지로 노포", null, null, null, 2, 15)).willReturn(response);
 
         // when
         PageResponse<List<PlaceSearchResponse>> result = placeService.searchPlaces(request, PageRequest.of(1, 50));
 
         // then
         assertThat(result.size()).isEqualTo(15);
-        verify(kakaoLocalClient).searchRestaurants("을지로 노포", 2, 15);
+        verify(kakaoLocalClient).searchRestaurants("을지로 노포", null, null, null, 2, 15);
     }
 
     @DisplayName("45번째 이후의 검색 결과는 조회할 수 없다.")
@@ -98,7 +98,7 @@ class PlaceServiceTest {
                 .extracting("errorCode")
                 .isEqualTo(PlaceExceptionCode.SEARCH_PAGE_OUT_OF_RANGE);
 
-        verify(kakaoLocalClient, never()).searchRestaurants(anyString(), anyInt(), anyInt());
+        verify(kakaoLocalClient, never()).searchRestaurants(anyString(), any(), any(), any(), anyInt(), anyInt());
     }
 
     @DisplayName("외부 장소 검색 API 호출에 실패하면 맛집을 검색할 수 없다.")
@@ -107,7 +107,7 @@ class PlaceServiceTest {
         // given
         PlaceSearchRequest request = new PlaceSearchRequest("강남 파스타");
 
-        given(kakaoLocalClient.searchRestaurants("강남 파스타", 1, 15))
+        given(kakaoLocalClient.searchRestaurants("강남 파스타", null, null, null, 1, 15))
                 .willThrow(new ResourceAccessException("timeout"));
 
         // when & then

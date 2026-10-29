@@ -101,7 +101,8 @@ public class PlaceService {
     private KakaoKeywordSearchResponse searchKakaoRestaurants(String keyword, Pageable pageable) {
         try {
             // 카카오 페이지 번호는 1부터 시작한다.
-            return kakaoLocalClient.searchRestaurants(keyword, pageable.getPageNumber() + 1, pageable.getPageSize());
+            return kakaoLocalClient.searchRestaurants(keyword, null, null, null,
+                    pageable.getPageNumber() + 1, pageable.getPageSize());
         } catch (RestClientException e) {
             log.error("카카오 장소 검색 실패: keyword={}", keyword, e);
             throw new PlaceException(EXTERNAL_API_ERROR);
