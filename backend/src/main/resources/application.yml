@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ticketRun
+    name: whatToEat
     version: 1.0
 
   profiles:
