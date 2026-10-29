@@ -36,7 +36,7 @@ Spring Boot + Spring Data JPA 백엔드의 도메인 단위 코드 작성 규칙
 - 상태 코드: POST `201`, GET·PATCH `200` (전체 교체일 때만 PUT), DELETE `204`. 모든 핸들러에 `@ResponseStatus` 명시.
 - `@Valid` 를 적용한 DTO를 그대로 Service에 넘긴다. Entity 생성·반환, 비즈니스·권한 판단은 하지 않는다 (인증 여부 확인까지만).
 - 인증 정보는 `@AuthenticationPrincipal Long memberId` 한 가지 방식으로만 받는다. principal 은 Access 토큰 subject 의 회원 ID이며, 역할이 필요하면 Service에서 회원을 조회해 판단한다.
-- URL 권한: `/api/admin/**` ADMIN, `/api/organizer/**` ORGANIZER, 그 외 인증 필요. 권한 계층은 ADMIN > ORGANIZER > AUDIENCE (`SecurityConfig`).
+- URL 권한: `/api/admin/**` ADMIN, 그 외 인증 필요. 권한 계층은 ADMIN > USER (`SecurityConfig`). 리스트별 소유자·편집자·보기 권한은 전역 `Role` 이 아닌 해당 도메인 Service에서 판단한다.
 - 입력
   - JSON: `@RequestBody @Valid`
   - 파일: `multipart/form-data` + `@RequestPart("request")` / `@RequestPart("files")`
