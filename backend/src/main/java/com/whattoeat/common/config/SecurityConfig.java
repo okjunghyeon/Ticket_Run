@@ -37,7 +37,6 @@ public class SecurityConfig {
     // 소셜 로그인 진입·콜백과 재발급·로그아웃은 Access 토큰 없이 호출된다.
     private static final String[] PERMIT_URLS = {"/error", "/oauth2/**", "/login/oauth2/**", "/api/auth/**"};
     private static final String ADMIN_URLS = "/api/admin/**";
-    private static final String ORGANIZER_URLS = "/api/organizer/**";
 
     private static final List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
 
@@ -64,7 +63,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PERMIT_URLS).permitAll()
                         .requestMatchers(ADMIN_URLS).hasRole("ADMIN")
-                        .requestMatchers(ORGANIZER_URLS).hasRole("ORGANIZER")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
@@ -85,12 +83,11 @@ public class SecurityConfig {
                 .build();
     }
 
-    // ADMIN 은 주최자·관객 API를, ORGANIZER 는 관객 API를 함께 사용할 수 있다.
+    // ADMIN 은 일반 회원 API를 함께 사용할 수 있다.
     @Bean
     public static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("ADMIN").implies("ORGANIZER")
-                .role("ORGANIZER").implies("AUDIENCE")
+                .role("ADMIN").implies("USER")
                 .build();
     }
 
